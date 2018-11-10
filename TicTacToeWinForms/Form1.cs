@@ -6,8 +6,7 @@ namespace TicTacToeWinForms
 {
 	public partial class Form1 : Form
 	{
-		private bool turn = false;
-		private Cell[] cells = new Cell[3 * 3];
+		private Game game = Game.None;
 
 		public Form1()
 		{
@@ -19,21 +18,21 @@ namespace TicTacToeWinForms
 			if (sender is Button button)
 			{
 				var pos = Convert.ToInt32(button.Tag) - 1;
-				if (!this.cells[pos].IsEmpty)
+				if (!this.game.cells[pos].IsEmpty)
 					return;
 
 				button.Enabled = false;
-				this.cells[pos].Occupant = button.Text = this.turn
+				this.game.cells[pos].Occupant = button.Text = this.game.turn
 					? "O"
 					: "X";
 
-				var winner = TicTacToe.DoWeHaveAWinner(this.cells);
-				var draw = this.cells.All(p => !p.IsEmpty) && (winner == null); // <-- no winner, check to show intent.
+				var winner = TicTacToe.DoWeHaveAWinner(this.game.cells);
+				var draw = this.game.cells.All(p => !p.IsEmpty) && (winner == null); // <-- no winner, check to show intent.
 
 				if (winner == null)
 				{
 					if (draw) MessageBox.Show("It's a draw");
-					else this.turn = !this.turn;
+					else this.game.turn = !this.game.turn;
 
 					return;
 				}
@@ -52,8 +51,15 @@ namespace TicTacToeWinForms
 
 		private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			this.turn = false;
-			this.cells = new Cell[3 * 3];
+			using (var dialog = new GameStartingForm(Play))
+			{
+				dialog.ShowDialog();
+			}
+		}
+
+		void Play(string playerX, string playerO, int rounds)
+		{
+			this.game = Game.NewGame(playerX, playerO, rounds);
 			foreach (var button in this.Controls.OfType<Button>())
 			{
 				button.Text = string.Empty;
@@ -73,15 +79,37 @@ namespace TicTacToeWinForms
 		}
 	}
 
-	public struct Cell
+	internal class Game
 	{
-		public bool IsEmpty => this.Occupant == null;
+		public static readonly Game None = NewGame(null, null, 0);
 
-		public object Occupant { get; internal set; }
+		public bool turn = false;
+		public TicTacToe.Cell[] cells = new TicTacToe.Cell[3 * 3];
+
+		private string playerX;
+		private string playerO;
+		private int rounds;
+
+		public Game(string playerX, string playerO, int rounds)
+		{
+			this.playerX = playerX;
+			this.playerO = playerO;
+			this.rounds = rounds;
+		}
+
+		public static Game NewGame(string playerX, string playerO, int rounds)
+			=> new Game(playerX, playerO, rounds);
 	}
 
 	public static class TicTacToe
 	{
+		public struct Cell
+		{
+			public bool IsEmpty => this.Occupant == null;
+
+			public object Occupant { get; internal set; }
+		}
+
 		private static readonly int[,] _matches = {
 			{ 0, 1, 2 },
 			{ 3, 4, 5 },
