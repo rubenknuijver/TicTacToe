@@ -7,6 +7,8 @@ namespace TicTacToeWinForms
 	{
 		public readonly bool Value;
 
+		public static GameTurn Empty = new GameTurn();
+
 		public GameTurn(bool value)
 			: this()
 		{

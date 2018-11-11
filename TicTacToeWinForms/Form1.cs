@@ -28,6 +28,15 @@ namespace TicTacToeWinForms
 			Application.Exit();
 		}
 
+		private void GameViewBeginState()
+		{
+			foreach (var button in this.Controls.OfType<Button>())
+			{
+				button.Text = string.Empty;
+				button.Enabled = true;
+			}
+		}
+
 		private void GameViewEndState()
 		{
 			this.Controls
@@ -37,15 +46,6 @@ namespace TicTacToeWinForms
 				{
 					control.Enabled = false;
 				});
-		}
-
-		private void GameViewBeginState()
-		{
-			foreach (var button in this.Controls.OfType<Button>())
-			{
-				button.Text = string.Empty;
-				button.Enabled = true;
-			}
 		}
 
 		private void newGameToolStripMenuItem_Click(object sender, EventArgs e)

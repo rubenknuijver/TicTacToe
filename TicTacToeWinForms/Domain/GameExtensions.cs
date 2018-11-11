@@ -5,7 +5,7 @@ namespace TicTacToeWinForms
 {
 	public static class GameExtensions
 	{
-		public static object CurrentPlayer(this Game game) => game.Turn.Value ? game.PlayerO : game.PlayerX;
+		public static string CurrentPlayer(this Game game) => game.Turn.Value ? game.PlayerO : game.PlayerX;
 
 		public static Maybe<object> Winner(this Game game) => TicTacToe.DoWeHaveAWinner(game.Cells);
 		public static bool HasEmptySpaces(this Game game) => game.Cells.Any(p => p.IsEmpty);

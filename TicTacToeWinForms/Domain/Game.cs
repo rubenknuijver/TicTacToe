@@ -4,11 +4,12 @@ namespace TicTacToeWinForms
 {
 	public class Game
 	{
-		private Game(string playerX, string playerO)
+		private Game(string playerX, string playerO, GameTurn turn)
 		{
 			this.Cells = new TicTacToe.Cell[3 * 3];
 			this.PlayerX = playerX;
 			this.PlayerO = playerO;
+			this.Turn = turn;
 		}
 
 		public TicTacToe.Cell[] Cells { get; private set; }
@@ -19,21 +20,10 @@ namespace TicTacToeWinForms
 
 		public GameTurn Turn { get; private set; }
 
-		public static Game NewGame(string playerX, string playerO)
-			=> new Game(playerX, playerO);
+		public static Game NewGame(string playerX, string playerO) => new Game(playerX, playerO, GameTurn.Empty);
 
-		public Game RestartGame()
-			=> this.Update(new Game(this.PlayerX, this.PlayerO), map =>
-			{
-				map.Turn = this.Turn;
-			});
-
-		public Game SwitchTurns()
-			=> this.Update(new Game(this.PlayerX, this.PlayerO), map =>
-			{
-				map.Cells = this.Cells;
-				map.Turn = this.Turn.Switch();
-			});
+		public Game RestartGame() => new Game(this.PlayerX, this.PlayerO, this.Turn);
+		public Game SwitchTurns() => this.Update(new Game(this.PlayerX, this.PlayerO, this.Turn.Switch()), map => map.Cells = this.Cells);
 
 		private Game Update(Game game, Action<Game> map)
 		{
