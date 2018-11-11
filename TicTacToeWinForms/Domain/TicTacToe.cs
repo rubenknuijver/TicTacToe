@@ -1,4 +1,6 @@
-﻿namespace TicTacToeWinForms
+﻿using System;
+
+namespace TicTacToeWinForms
 {
 	public static class TicTacToe
 	{
@@ -25,7 +27,7 @@
 		/// </summary>
 		/// <param name="cells"></param>
 		/// <returns></returns>
-		public static object DoWeHaveAWinner(Cell[] cells)
+		public static Maybe<object> DoWeHaveAWinner(Cell[] cells)
 		{
 			Cell map(int index, int pos) => cells[_matches[index, pos]];
 
@@ -42,11 +44,11 @@
 
 				if (c1.Occupant == c2.Occupant && c2.Occupant == c3.Occupant)
 				{
-					return c1.Occupant;
+					return Maybe<object>.Some(c1.Occupant);
 				}
 			}
 
-			return null;
+			return Maybe<object>.Nome;
 		}
 
 		public struct Cell
@@ -54,6 +56,33 @@
 			public bool IsEmpty => this.Occupant == null;
 
 			public object Occupant { get; internal set; }
+		}
+	}
+
+	public struct Maybe<T>
+	{
+		private Maybe(T value)
+		{
+			this.Value = value;
+			this.HasValue = true;
+		}
+
+		public bool HasValue { get; }
+		public T Value { get; }
+
+		public static Maybe<T> Some(T value) => new Maybe<T>(value);
+		public static Maybe<T> Nome = new Maybe<T>();
+
+		public void When(Action<T> some, Action none)
+		{
+			if (this.HasValue)
+			{
+				some(this.Value);
+			}
+			else
+			{
+				none();
+			}
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace TicTacToeWinForms
 		public Form1()
 		{
 			this.InitializeComponent();
-			this.GameEndView();
+			this.GameViewEndState();
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -28,7 +28,7 @@ namespace TicTacToeWinForms
 			Application.Exit();
 		}
 
-		private void GameEndView()
+		private void GameViewEndState()
 		{
 			this.Controls
 				.OfType<Button>()
@@ -39,7 +39,7 @@ namespace TicTacToeWinForms
 				});
 		}
 
-		private void GameStartView()
+		private void GameViewBeginState()
 		{
 			foreach (var button in this.Controls.OfType<Button>())
 			{
@@ -50,7 +50,7 @@ namespace TicTacToeWinForms
 
 		private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var dialog = new GameStartingForm(this.Play, game.PlayerX, game.PlayerO))
+			using (var dialog = new GameStartingForm(this.Play, this.game.PlayerX, this.game.PlayerO))
 			{
 				dialog.ShowDialog();
 			}
@@ -61,7 +61,7 @@ namespace TicTacToeWinForms
 			this.score = new Dictionary<GameRound, Game>();
 			this.game = Game.NewGame(playerX, playerO);
 			this.round = new GameRound(rounds, 1);
-			this.GameStartView();
+			this.GameViewBeginState();
 		}
 
 		private void SwitchTurns()
@@ -83,30 +83,30 @@ namespace TicTacToeWinForms
 				{
 					button.Text = g.Turn.Marker();
 
-					var winner = g.DoWeHaveAWinner();
-					var draw = (!g.HasEmptySpaces()) && (winner == null); // <-- no winner, check to show intent.
-
-					if (winner == null)
-					{
-						if (draw) MessageBox.Show("It's a draw");
-						else this.SwitchTurns();
-
-						return;
-					}
-
-					MessageBox.Show($"The winner of round {this.round.Current} is {winner}");
-					this.score.Add(this.round, g);
-					if (this.round.RoundsLeft > 0)
-					{
-						this.round = this.round.Next();
-						this.game = g.RestartGame();
-						if (this.round.IsFinal) MessageBox.Show($"Final round.");
-						this.GameStartView();
-					}
-					else
-					{
-						this.GameEndView();
-					}
+					g.Winner()
+					 .When(
+						some: winner =>
+						{
+							MessageBox.Show($"The winner of round {this.round.Current} is {winner}");
+							this.score.Add(this.round, g);
+							if (this.round.RoundsLeft > 0)
+							{
+								this.round = this.round.Next();
+								this.game = g.RestartGame();
+								if (this.round.IsFinal) MessageBox.Show($"Final round.");
+								this.GameViewBeginState();
+							}
+							else
+							{
+								this.GameViewEndState();
+							}
+						},
+						none: () =>
+						{
+							var draw = !g.HasEmptySpaces();
+							if (draw) MessageBox.Show("It's a draw");
+							else this.SwitchTurns();
+						});
 				});
 			}
 		}
