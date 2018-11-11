@@ -8,10 +8,13 @@ namespace TicTacToeWinForms
 	{
 		private readonly Action<string, string, int> play;
 
-		public GameStartingForm(Action<string, string, int> play)
+		public GameStartingForm(Action<string, string, int> play, string playerX, string playerO)
 		{
-			this.play = play;
 			this.InitializeComponent();
+
+			this.play = play;
+			this.textPlayerX.Text = playerX;
+			this.textPlayerO.Text = playerO;
 		}
 
 		private void numericRounds_ValueChanged(object sender, EventArgs e)

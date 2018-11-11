@@ -57,6 +57,7 @@
 			this.textPlayerX.Name = "textPlayerX";
 			this.textPlayerX.Size = new System.Drawing.Size(194, 20);
 			this.textPlayerX.TabIndex = 0;
+			this.textPlayerX.Text = "X";
 			// 
 			// label1
 			// 
@@ -118,6 +119,7 @@
 			this.textPlayerO.Name = "textPlayerO";
 			this.textPlayerO.Size = new System.Drawing.Size(194, 20);
 			this.textPlayerO.TabIndex = 0;
+			this.textPlayerO.Text = "O";
 			// 
 			// label3
 			// 
