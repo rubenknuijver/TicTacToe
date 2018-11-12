@@ -48,7 +48,7 @@ namespace TicTacToeWinForms
 				}
 			}
 
-			return Maybe<object>.Nome;
+			return Maybe<object>.None;
 		}
 
 		public struct Cell

@@ -34,7 +34,7 @@ namespace TicTacToeWinForms
 			var invalid = (numericRounds.Value % 2 == 0);
 			if (invalid)
 			{
-				MessageBox.Show("number of round should be an uneven number");
+				MessageBox.Show("number of round should be a odd number");
 				return;
 			}
 
